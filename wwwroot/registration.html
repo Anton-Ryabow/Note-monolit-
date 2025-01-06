@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oi&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">Note</a>
+        <div class="menu">
+            <a href="about.html" class="menu-item" id="about">О нас</a>
+            <a href="faq.html" class="menu-item" id="faq">FAQ</a>
+            <a href="login.html" class="menu-item" id="pic"></a>
+        </div>
+    </header>
+    <main>
+        <form action="" class="registration-form">
+            <label>Регистрация</label>
+            <input name="name" placeholder="Имя"/>
+            <input name="lastname" placeholder="Фамилия"/>
+            <input type="email" name="email" placeholder="Email"/>
+            <input name="login" placeholder="Логин"/>
+            <input type="password" name="password" placeholder="Пароль"/>
+            <input id="registration-form__submit" type="submit" value="Отправить"/>
+        </form>
+    </main>
+
+    <script>
+        document.querySelector("form")
+        .addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            let name = document.getElementsByName("name")[0].value;
+            let lastname = document.getElementsByName("lastname")[0].value;
+            let email = document.getElementsByName("email")[0].value;
+            let login = document.getElementsByName("login")[0].value;
+            let password = document.getElementsByName("password")[0].value;
+
+            if (!(name && lastname && email && login && password)){
+                alert("Все поля должны быть заполнены! (js)");
+                return;
+            }
+
+            let formData = new FormData();
+
+            formData.append("name", name);
+            formData.append("lastname", lastname);
+            formData.append("email", email);
+            formData.append("login", login);
+            formData.append("password", password);
+
+            const headers = {
+                'Access-Control-Allow-Credentials': 'true',
+            };
+
+            let response = await fetch("https://localhost:7111/registration", {
+                method: "POST",
+                headers,
+                body: formData,
+                credentials: "include",
+            });
+
+            if (response.ok === true) {
+
+                let result = await response.json();
+                alert(result.message);
+
+                for (let entry of response.headers.entries()) {
+                    console.log(entry);
+                }
+
+                window.location.replace("/empty");
+            }
+            else {
+                const error = await response.json();
+                alert(error.message);
+            }
+
+            
+        })
+    </script>
+</body>
+</html>
